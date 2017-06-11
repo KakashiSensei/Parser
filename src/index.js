@@ -10,6 +10,7 @@ export default class ParseData {
     friendsArray;
 
     constructor(data, randomSeed) {
+        console.log("Inside parse");
         this.facebookData = data;
         this.randomSeed = randomSeed;
     }
