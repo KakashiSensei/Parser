@@ -1,7 +1,7 @@
 {
   "name": "wl-parser",
   "version": "1.0.3",
-  "main": "index.js",
+  "main": "dist/bundle.js",
   "author": "Vivek <vivekfitkariwala@gmail.com>",
   "license": "MIT",
   "scripts": {
