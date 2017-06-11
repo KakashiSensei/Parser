@@ -4,9 +4,7 @@ module.exports = {
     entry: path.join(__dirname, "main.js"),
     output: {
         path: path.join(__dirname, "dist"),
-        filename: "bundle.js",
-        libraryTarget: 'var',
-        library: "ParseData"       
+        filename: "bundle.js"    
     },
     devtool: 'eval',
     resolve: {
