@@ -1,13 +1,12 @@
 {
-  "name": "parser",
-  "version": "1.0.0",
+  "name": "wl-parser",
+  "version": "1.0.2",
   "main": "index.js",
   "author": "Vivek <vivekfitkariwala@gmail.com>",
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --progress --inline --hot",
     "build": "webpack -p",
-    "publish": "webpack main.js --output-library ParseData --output-filename dist/bundle.js",
     "test": "jest",
     "debug:jest": "node --debug-brk ./node_modules/.bin/jest --runInBand"
   },
