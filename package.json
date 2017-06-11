@@ -1,0 +1,41 @@
+{
+  "name": "parser",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Vivek <vivekfitkariwala@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server --progress --inline --hot",
+    "build": "webpack -p",
+    "publish": "webpack main.js --output-library ParseData --output-filename dist/bundle.js",
+    "test": "jest",
+    "debug:jest": "node --debug-brk ./node_modules/.bin/jest --runInBand"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-env": "^1.5.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-react-hmre": "^1.1.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "jest": "^20.0.4",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5"
+  },
+  "dependencies": {
+    "humanparser": "^1.1.1",
+    "lodash": "^4.17.4",
+    "shuffle-seed": "^1.1.6"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "js"
+    ]
+  }
+}
