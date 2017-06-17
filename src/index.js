@@ -1,6 +1,8 @@
 import shuffleSeed from "shuffle-seed";
 import * as _ from "lodash";
-import human from "humanparser";
+import Promise from "bluebird";
+import fetch from "isomorphic-fetch";
+
 
 export default class ParseData {
     facebookData;
@@ -10,13 +12,12 @@ export default class ParseData {
     friendsArray;
 
     constructor(data, randomSeed) {
-        console.log("Inside parse");
         this.facebookData = data;
         this.randomSeed = randomSeed;
     }
 
     analizeDomElement(domString) {
-        let replacedText = domString.replace(/\{(.*?)\}/g, function(g0, g1) {
+        let replacedText = domString.replace(/\{(.*?)\}/g, function (g0, g1) {
             let functionToCall = g1.replace("facebookData", "this");
             try {
                 return eval(functionToCall);
@@ -26,6 +27,28 @@ export default class ParseData {
 
         }.bind(this))
         return replacedText;
+    }
+
+    makeConnections() {
+        this.friendArray();
+        let promiseArray = [];
+        let accessToken = this.facebookData["accessToken"];
+        for (let friend of this.friendsArray) {
+            let id = friend.id;
+            let url = `https://graph.facebook.com/${id}?fields=first_name&access_token=${accessToken}`;
+            promiseArray.push(
+                fetch(url, { method: "GET" })
+                    .then(res => res.json())
+                    .then((res) => {
+                        let id = res.id;
+                        let index = _.findIndex(this.friendsArray, (friend) => { return friend.id == id })
+                        this.friendsArray[index]["first_name"] = res["first_name"];
+                    })
+                    .catch(err => console.log(err))
+            )
+        }
+
+        return Promise.all(promiseArray);
     }
 
     getMyFirstName() {
@@ -49,22 +72,20 @@ export default class ParseData {
 
     getFriendFirstName(friendNumber) {
         if (!this.friendsArray) {
-            this.friendArray();
+            return new Error("Your friend array is not formed");
         }
         if (friendNumber > this.friendsArray.length) {
-            return;
+            return new Error("Friend number is greater than friend list length");
         }
-        let fullName = this.friendsArray[friendNumber - 1].name;
-        let attrs = human.parseName(fullName);
-        return attrs.firstName;
+        return this.friendsArray[friendNumber - 1]["first_name"];
     }
 
     getFriendProfilePicture(friendNumber, width = 100, height = 100) {
         if (!this.friendsArray) {
-            this.friendArray();
+            new Error("Your friend array is not formed");
         }
         if (friendNumber > this.friendsArray.length) {
-            return;
+            return new Error("Friend number is greater than friend list length");
         }
         let id = this.friendsArray[friendNumber - 1].id;
         let accessToken = this.facebookData.accessToken;
@@ -130,7 +151,6 @@ export default class ParseData {
         let indexToSplice = Math.min(sortedArray.length, 20);
         let selectedFriendsArray = sortedArray.splice(0, indexToSplice);
         this.friendsArray = shuffleSeed.shuffle(selectedFriendsArray, this.randomSeed);
-        console.log("friendsArray", this.friendsArray);
     }
 
 }
