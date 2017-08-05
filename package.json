@@ -9,7 +9,7 @@
     "build": "npm run clean && tsc && webpack",
     "clean": "shx rm -rf _bundles lib lib-esm",
     "test": "jest",
-    "debug:jest": "node --debug-brk ./node_modules/.bin/jest --runInBand",
+    "debug:jest": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
     "prepublish": "npm run build"
   },
   "devDependencies": {
