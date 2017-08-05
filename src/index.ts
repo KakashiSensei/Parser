@@ -1,8 +1,5 @@
 import shuffleSeed from "shuffle-seed";
 import * as _ from "lodash";
-import Promise from "bluebird";
-import fetch from "isomorphic-fetch";
-
 
 export default class ParseData {
     facebookData;
@@ -16,8 +13,8 @@ export default class ParseData {
         this.randomSeed = randomSeed;
     }
 
-    analizeDomElement(domString) {
-        let replacedText = domString.replace(/\{(.*?)\}/g, function (g0, g1) {
+    public analizeDomElement(domString): string {
+        let replacedText: string = domString.replace(/\{(.*?)\}/g, function (g0, g1) {
             let functionToCall = g1.replace("facebookData", "this");
             try {
                 return eval(functionToCall);
