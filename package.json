@@ -17,7 +17,9 @@
     "exports-loader": "^0.6.4",
     "imports-loader": "^0.7.1",
     "jest": "^20.0.4",
+    "jest-cli": "^20.0.4",
     "shx": "^0.2.2",
+    "ts-jest": "^20.0.9",
     "typescript": "^2.4.2",
     "webpack": "^3.4.1"
   },
@@ -29,10 +31,12 @@
   },
   "jest": {
     "transform": {
-      "^.+\\.jsx?$": "babel-jest"
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
     "moduleFileExtensions": [
+      "ts",
+      "tsx",
       "js"
     ]
   }

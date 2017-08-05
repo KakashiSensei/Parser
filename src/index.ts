@@ -1,4 +1,4 @@
-import shuffleSeed from "shuffle-seed";
+import {shuffleSeed} from "shuffle-seed";
 import * as _ from "lodash";
 
 export default class ParseData {
