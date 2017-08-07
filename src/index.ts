@@ -1,11 +1,14 @@
 import * as shuffleSeed from "shuffle-seed";
 import * as _ from "lodash";
+import * as fetch from 'isomorphic-fetch';
+import * as gender from 'gender-detection';
 
 export default class ParseData {
     facebookData;
     randomSeed;
     commentWeight = 2;
     likesWeight = 1;
+    feedWeight = 3;
     friendsArray;
 
     constructor(data, randomSeed) {
@@ -14,14 +17,13 @@ export default class ParseData {
     }
 
     public analizeDomElement(domString): string {
-        let replacedText: string = domString.replace(/\{(.*?)\}/g, function (g0, g1) {
+        let replacedText: string = domString.replace(/\{(.*?)\}/g, function(g0, g1) {
             let functionToCall = g1.replace("facebookData", "this");
             try {
                 return eval(functionToCall);
             } catch (error) {
                 return functionToCall;
             }
-
         }.bind(this))
         return replacedText;
     }
@@ -32,7 +34,7 @@ export default class ParseData {
         let accessToken = this.facebookData["accessToken"];
         for (let friend of this.friendsArray) {
             let id = friend.id;
-            let url = `https://graph.facebook.com/${id}?fields=first_name&access_token=${accessToken}`;
+            let url = `https://graph.facebook.com/${id}?fields=first_name,gender,last_name,age_range&access_token=${accessToken}`;
             promiseArray.push(
                 fetch(url, { method: "GET" })
                     .then(res => res.json())
@@ -40,6 +42,9 @@ export default class ParseData {
                         let id = res.id;
                         let index = _.findIndex(this.friendsArray, (friend) => { return friend.id == id })
                         this.friendsArray[index]["first_name"] = res["first_name"];
+                        this.friendsArray[index]["last_name"] = res["last_name"];
+                        this.friendsArray[index]["gender"] = gender.detect(this.friendsArray[index]["first_name"]);
+                        this.friendsArray[index]["age_range"] = res["age_range"];
                     })
                     .catch(err => console.log(err))
             )
@@ -48,12 +53,55 @@ export default class ParseData {
         return Promise.all(promiseArray);
     }
 
+    setOppositeGender() {
+        let myGender: string = this.getMyGender();
+        let genderToSelect: string = myGender === "male" ? "female" : "male";
+        for (let i = 0; i < this.friendsArray.length; i++) {
+            let gender: string = this.friendsArray[i]["gender"];
+            if(gender === genderToSelect){
+                let toShift = this.friendsArray.splice(i, 1);
+                this.friendsArray.splice(0,0,toShift[0]);
+                break;
+            }
+        }
+    }
+
     getMyFirstName() {
         return this.facebookData.aboutMe.first_name;
     }
 
+    getMyFullName() {
+        return this.facebookData.aboutMe.name;
+    }
+
     getMyGender() {
         return this.facebookData.aboutMe.gender;
+    }
+
+    getAllProfilePicture() {
+        let profilePictureArray = [];
+        _.forEach(this.facebookData.photos.data, (value, key) => {
+            if (value.name === "Profile Pictures") {
+                _.forEach(value.photos.data, (value, key) => {
+                    let profilePicture = value.images;
+                    profilePictureArray.push(profilePicture);
+                })
+            }
+        })
+        return profilePictureArray;
+    }
+
+    getAllCoverPicture() {
+        let profilePictureArray = [];
+        _.forEach(this.facebookData.photos.data, (value, key) => {
+            if (value.name === "Cover Photos") {
+                _.forEach(value.photos.data, (value, key) => {
+                    let profilePicture = value.images;
+                    profilePictureArray.push(profilePicture);
+                })
+            }
+        })
+        return profilePictureArray;
     }
 
     getMyEmailAddress() {
@@ -77,6 +125,16 @@ export default class ParseData {
         return this.friendsArray[friendNumber - 1]["first_name"];
     }
 
+    getFriendFullName(friendNumber) {
+        if (!this.friendsArray) {
+            return new Error("Your friend array is not formed");
+        }
+        if (friendNumber > this.friendsArray.length) {
+            return new Error("Friend number is greater than friend list length");
+        }
+        return this.friendsArray[friendNumber - 1]["name"];
+    }
+
     getFriendProfilePicture(friendNumber, width = 100, height = 100) {
         if (!this.friendsArray) {
             new Error("Your friend array is not formed");
@@ -93,6 +151,7 @@ export default class ParseData {
         let albumData = this.facebookData.photos.data;
         let friendsDataValue = {};
 
+        // collecting data from photos
         _.forEach(albumData, (value, key) => {
             let albumName = value.name;
             if (albumName === "Cover Photos" || albumName === "Profile Pictures") {
@@ -100,14 +159,19 @@ export default class ParseData {
                 _.forEach(albumPhotos, (value, key) => {
                     //parse comments
                     if (value.comments) {
+                        let commentArray = [];
                         let comments = value.comments.data;
                         _.forEach(comments, (value, key) => {
                             let id = value.from.id;
+                            if (commentArray.indexOf(id) !== -1) {
+                                return;
+                            }
                             friendsDataValue[id] = friendsDataValue[id] || {};
                             let lastValue = friendsDataValue[id].weight || 0;
                             lastValue += this.commentWeight;
                             let dataToEnter = { name: value.from.name, weight: lastValue };
                             friendsDataValue[id] = dataToEnter;
+                            commentArray.push(id);
                         })
                     }
 
@@ -123,6 +187,23 @@ export default class ParseData {
                             friendsDataValue[id] = dataToEnter;
                         })
                     }
+                })
+            }
+        })
+
+        let feedData = this.facebookData.feeds.data;
+        // collecting data from feeds
+        _.forEach(feedData, (value, key) => {
+            let storyTags = value.story_tags;
+            if (storyTags) {
+                _.forEach(storyTags, (value, key) => {
+                    value = value[0];
+                    let id = value.id;
+                    friendsDataValue[id] = friendsDataValue[id] || {};
+                    let lastValue = friendsDataValue[id].weight || 0;
+                    lastValue += this.feedWeight;
+                    let dataToEnter = { name: value.name, weight: lastValue };
+                    friendsDataValue[id] = dataToEnter;
                 })
             }
         })
@@ -144,10 +225,9 @@ export default class ParseData {
 
         //sort friends array
         let sortedArray = _.orderBy(friendsArray, ["weight"]).reverse();
-
-        let indexToSplice = Math.min(sortedArray.length, 20);
+        let indexToSplice = Math.min(sortedArray.length, 10);
         let selectedFriendsArray = sortedArray.splice(0, indexToSplice);
+
         this.friendsArray = shuffleSeed.shuffle(selectedFriendsArray, this.randomSeed);
     }
-
 }

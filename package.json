@@ -5,11 +5,11 @@
   "author": "Vivek <vivekfitkariwala@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "tsc -m es6 --outDir lib-esm",
+    "start": "ts-node src/index.ts",
     "build": "npm run clean && tsc && webpack",
     "clean": "shx rm -rf _bundles lib lib-esm",
     "test": "jest",
-    "debug:jest": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
+    "debug:jest": "node --debug-brk ./node_modules/.bin/jest --runInBand",
     "prepublish": "npm run build"
   },
   "devDependencies": {
@@ -20,24 +20,27 @@
     "jest-cli": "^20.0.4",
     "shx": "^0.2.2",
     "ts-jest": "^20.0.9",
+    "ts-node": "^3.3.0",
     "typescript": "^2.4.2",
     "webpack": "^3.4.1"
   },
   "dependencies": {
-    "bluebird": "^3.5.0",
+    "gender-detection": "^0.0.5",
+    "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
-    "shuffle-seed": "^1.1.6",
-    "whatwg-fetch": "^2.0.3"
+    "shuffle-seed": "^1.1.6"
   },
   "jest": {
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
     "moduleFileExtensions": [
       "ts",
       "tsx",
       "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js"
+    },
+    "testMatch": [
+      "**/__tests__/*.(ts|tsx|js)"
     ]
   }
 }

@@ -22,8 +22,8 @@ module.exports = {
             include: /\.min\.js$/,
         }),
         new webpack.ProvidePlugin({
-            Promise: "imports-loader?this=>global!exports-loader?global.Promise!bluebird",
-            fetch: "imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch"
+            'Promise': "imports-loader?this=>global!exports-loader?global.Promise!bluebird",
+            'fetch': "imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch"
         }),
     ],
     module: {
