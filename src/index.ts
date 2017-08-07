@@ -197,7 +197,6 @@ export default class ParseData {
             let storyTags = value.story_tags;
             if (storyTags) {
                 _.forEach(storyTags, (value, key) => {
-                    value = value[0];
                     let id = value.id;
                     friendsDataValue[id] = friendsDataValue[id] || {};
                     let lastValue = friendsDataValue[id].weight || 0;
