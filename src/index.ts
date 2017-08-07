@@ -7,7 +7,7 @@ export default class ParseData {
     facebookData;
     randomSeed;
     commentWeight = 2;
-    likesWeight = 1;
+    likesWeight = 0.5;
     feedWeight = 3;
     friendsArray;
 
