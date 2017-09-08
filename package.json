@@ -25,6 +25,7 @@
     "webpack": "^3.4.1"
   },
   "dependencies": {
+    "bugsnag": "^1.12.1",
     "gender-detection": "^0.0.5",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
