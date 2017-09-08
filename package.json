@@ -13,16 +13,16 @@
     "prepublish": "npm run build"
   },
   "devDependencies": {
-    "awesome-typescript-loader": "^3.2.2",
+    "awesome-typescript-loader": "^3.2.3",
     "exports-loader": "^0.6.4",
     "imports-loader": "^0.7.1",
-    "jest": "^20.0.4",
-    "jest-cli": "^20.0.4",
+    "jest": "^21.0.1",
+    "jest-cli": "^21.0.1",
     "shx": "^0.2.2",
-    "ts-jest": "^20.0.9",
+    "ts-jest": "^21.0.0",
     "ts-node": "^3.3.0",
-    "typescript": "^2.4.2",
-    "webpack": "^3.4.1"
+    "typescript": "^2.5.2",
+    "webpack": "^3.5.6"
   },
   "dependencies": {
     "bugsnag": "^1.12.1",
