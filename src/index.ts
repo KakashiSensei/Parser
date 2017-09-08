@@ -2,7 +2,6 @@ import * as shuffleSeed from "shuffle-seed";
 import * as _ from "lodash";
 import * as fetch from 'isomorphic-fetch';
 import * as gender from 'gender-detection';
-import * as bugsnag from 'bugsnag';
 
 export default class ParseData {
     facebookData: IFacebookData;
@@ -17,9 +16,6 @@ export default class ParseData {
         this.facebookData = data;
         this.randomSeed = randomSeed;
         this.makeFriendDetailArray();
-
-        // register bugsnag
-        bugsnag.register("856a862df5001638d8872d9f1e791603");
     }
 
     public analizeDomElement(domString): string {
@@ -283,8 +279,8 @@ export default class ParseData {
 
     private reportError(errorTag: string): void {
         console.log("Error reported");
-        let obj: Object = { tag: errorTag, data: this.facebookData, friendsArray: this.friendsArray };
-        bugsnag.notify(new Error(JSON.stringify(obj)));
+        // let obj: Object = { tag: errorTag, data: this.facebookData, friendsArray: this.friendsArray };
+        // bugsnag.notify(new Error(JSON.stringify(obj)));
     }
 }
 

@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && tsc && webpack",
     "clean": "shx rm -rf _bundles lib lib-esm",
     "test": "jest",
     "debug:jest": "node --debug-brk ./node_modules/.bin/jest --runInBand",
@@ -26,7 +26,6 @@
     "webpack": "^3.5.6"
   },
   "dependencies": {
-    "bugsnag": "^1.12.1",
     "gender-detection": "^0.0.5",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
