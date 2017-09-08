@@ -240,17 +240,15 @@ export default class ParseData {
             let storyTags = value.story_tags;
             if (storyTags) {
                 _.forEach(storyTags, (value, key) => {
-                    _.forEach(value, (value, key) => {
-                        let id = value.id;
-                        if (id === undefined) {
-                            debugger;
-                        }
-                        friendsDataValue[id] = friendsDataValue[id] || {};
-                        let lastValue = friendsDataValue[id].weight || 0;
-                        lastValue += this.feedWeight;
-                        let dataToEnter = { name: value.name, weight: lastValue };
-                        friendsDataValue[id] = dataToEnter;
-                    })
+                    let id = value.id;
+                    if (id === undefined) {
+                        debugger;
+                    }
+                    friendsDataValue[id] = friendsDataValue[id] || {};
+                    let lastValue = friendsDataValue[id].weight || 0;
+                    lastValue += this.feedWeight;
+                    let dataToEnter = { name: value.name, weight: lastValue };
+                    friendsDataValue[id] = dataToEnter;
                 })
             }
         })
@@ -278,6 +276,7 @@ export default class ParseData {
     }
 
     private reportError(errorTag: string): void {
+        debugger;
         console.log("Error reported");
         // let obj: Object = { tag: errorTag, data: this.facebookData, friendsArray: this.friendsArray };
         // bugsnag.notify(new Error(JSON.stringify(obj)));
