@@ -6,11 +6,12 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "build": "npm run clean && tsc && webpack",
+    "build": "npm run clean && tsc",
     "clean": "shx rm -rf _bundles lib lib-esm",
     "test": "jest",
     "debug:jest": "node --debug-brk ./node_modules/.bin/jest --runInBand",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "tsc": "tsc"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^3.2.3",
