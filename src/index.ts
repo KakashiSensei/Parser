@@ -255,7 +255,7 @@ export default class ParseData {
 
         let friendsArray: Array<IFriend> = [];
         _.forEach(friendsDataValue, (value, key) => {
-            if (value.id !== undefined) {
+            if (key !== undefined) {
                 value.id = key;
                 friendsArray.push(value);
             } else {
