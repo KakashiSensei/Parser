@@ -255,8 +255,12 @@ export default class ParseData {
 
         let friendsArray: Array<IFriend> = [];
         _.forEach(friendsDataValue, (value, key) => {
-            value.id = key;
-            friendsArray.push(value);
+            if (value.id !== undefined) {
+                value.id = key;
+                friendsArray.push(value);
+            } else {
+                console.log("===============Undefined data is still coming from the code==============");
+            }
         })
 
         // remove user own id from
